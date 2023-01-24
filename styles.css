@@ -17,7 +17,7 @@ body, html {
 }
 
 .middle-section {
-    height: 70%;
+    height: 60%;
     display: flex;
 }
 
@@ -27,6 +27,7 @@ body, html {
 
     .calculator-shell {
         width: 18%;
+        min-height: 200px;
         display: flex;
         flex-direction: column;
         border-radius: 25px;
@@ -36,10 +37,29 @@ body, html {
     }
 
         .calculator-screen {
-            flex: 1;
+            height: 20%;
             border-radius: 10px;
             margin: 10px;
+            background-color: green;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
         }
+
+            .display-text {
+                margin-top: auto;
+                margin-bottom: 2%;
+                margin-right: 3%;
+                padding-bottom: 3%;
+                font-size: 150%;
+            }
+
+            .captured-number {
+                margin: 3% 5% auto 0%;
+                padding-top: 4px;
+            }
 
         .calculator-buttons {
             flex: 3;
@@ -50,13 +70,14 @@ body, html {
                 flex: auto;
                 display: flex;
                 flex-direction: column;
+                width: 25%;
                 justify-content: space-evenly;
                 align-items: center;
             }
 
                 .button {
-                    height: 65px;
-                    width: 65px;
+                    height: 18%;
+                    width: 90%;
                     border-radius: 100%;
                     display: flex;
                     justify-content: center;

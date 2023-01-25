@@ -17,6 +17,14 @@ const divide = (x, y) => {
     return x / y;
 };
 
+const plusMinus = (x) => {
+    return -x;
+}
+
+const percentage = (x) => {
+    return x / 100;
+}
+
 const operate = (operator, x, y) => {
     switch(operator) {
         case '+':
@@ -24,53 +32,58 @@ const operate = (operator, x, y) => {
             return add(x, y);
             break;
         case '-':
+            operationString = `${x} - ${y} =`;
             return subtract(x, y);
             break
         case '*':
+            operationString = `${x} * ${y} =`;
             return multiply(x, y);
             break;
         case '/':
+            operationString = `${x} / ${y} =`;
             return divide(x, y);
-            break
+            break;
+        case '+/-':
+            return plusMinus(x);
+            break;
+        case '%':
+            operationString = `0.01 * ${y} =`;
+            return percentage(x);
+            break;
     }
 }
-
-// set operation string variable to display in upper portion of calculator
-    // set operation string after operation in operate function;
-
-
 
 
 
 const calculatorNumberButtons = document.querySelectorAll('.number');
 const calculatorDisplay = document.querySelector('.display-text');
-const capturedNumberDisplay = document.querySelector('.captured-number');
+const answerDisplay = document.querySelector('.captured-number');
 const calculatorDecimalButton = document.querySelector('.decimal');
 const calculatorOperatorButtons = document.querySelectorAll('.operator');
 const calculatorEqualsButton = document.querySelector('.equals');
 const calculatorClearButton = document.querySelector('.clear-button');
+const calculatorBackspaceButton = document.querySelector('.backspace');
+const calculatorPlusMinusButton = document.querySelector('.plus-minus');
+
 
 let operationString = ''
-// let capturedNum = null;
-// let currentNum = null;
-// let lastNum = null;
 let x = null;
-let y = null;
-let answer = null;
 let currentOperator = null;
 let answered = false;
-
-
-
+let beginFlag = true;
+let newNum = false;
+let repeat = false;
 
 
 
 const clearCalculator = () => {
-    capturedNum = null;
+    x = null;
     currentOperator = null;
     answered = false;
     calculatorDisplay.textContent = 0;
-    capturedNumberDisplay.textContent = ''
+    answerDisplay.textContent = '';
+    beginFlag = true;
+
 }
 
 const checkDecimal = () => {
@@ -79,61 +92,76 @@ const checkDecimal = () => {
         return;
     };
     updateDisplay('.');
-}
-
-
-const setCurrentNum = () => {
-    currentNum = parseInt(calculatorDisplay.textContent);
-    return currentNum;
-}
-
-
-
-
-const updateDisplay = (num) => {
-    if (calculatorDisplay.textContent == '0') {
-        calculatorDisplay.textContent = '';
-    }
-    calculatorDisplay.textContent += num;
-    
 };
 
+const getDisplayedNumber = () => {
+    return parseInt(calculatorDisplay.textContent);
+};
 
+const backspace = () => {
+    calculatorDisplay.textContent = calculatorDisplay.textContent.slice(0, calculatorDisplay.textContent.length - 1);
+};
 
+const makeNegative = () => {
+    calculatorDisplay.textContent = parseInt(getDisplayedNumber()) * -1;
+};
 
+const updateDisplay = (num) => {
+    if (beginFlag) {
+        beginFlag = false;
+        calculatorDisplay.textContent = '' + num;
+        return;
+    };
+    if (newNum == true) {
+        calculatorDisplay.textContent = '';
+        calculatorDisplay.textContent += num;
+        newNum = false;
+        return;
+    };
+    if (newNum == false) {
+        calculatorDisplay.textContent += num;
+    };  
+};
 
+const getX = () => {
+    return x;
+};
 
+const declareNewNum = () => {
+    newNum = true;
+};
 
-const updateCapturedNumberDisplay = (text) => {
-    capturedNumberDisplay.textContent = text; 
-}
-
-
-
-const checkOperator = (operator) => {
+const setOperator = (operator) => {
     currentOperator = operator;
 };
 
-const calculatorOperation = (operator) => {
 
+const setNumbers = () => {
+    if (x == null){
+            x = getDisplayedNumber();
+            return;
+        };
 
-
-
-
-
-
-    
-    // update captured number //
-    
-    // show answer
-    
-    // erase current operator??
-    // 
-    // may need to establish an 'answered' flag so that you cannot add numbers
-    // onto the end of the answer displayed from the previous operation
-
-    //
+    if (answered == true) {
+        x = getDisplayedNumber();
+        answered = false;
+        return;
+    };
 };
+
+
+
+
+const shouldCalculatorOperate = () => {
+    if (answered == false && x!=null) {
+        calculatorDisplay.textContent = operate(currentOperator, getX(), getDisplayedNumber());
+        answerDisplay.textContent = operationString;
+        answered = true;
+    }
+    setNumbers();
+}
+
+
 
 
 
@@ -143,11 +171,14 @@ const calculatorOperation = (operator) => {
 
 calculatorClearButton.addEventListener('click', clearCalculator);
 calculatorDecimalButton.addEventListener('click', checkDecimal);
+calculatorBackspaceButton.addEventListener('click', backspace);
+calculatorPlusMinusButton.addEventListener('click', makeNegative);
+
 
 
 calculatorNumberButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        return updateDisplay(button.textContent);
+        updateDisplay(button.textContent);
     });
 });
 
@@ -155,13 +186,15 @@ calculatorNumberButtons.forEach((button) => {
 
 calculatorOperatorButtons.forEach(button => {
     button.addEventListener('click', () => {
-        checkOperator(button.textContent);
-        calculatorOperation(currentOperator);
         
+        declareNewNum();
+        shouldCalculatorOperate();
+        setOperator(button.textContent);        
     })
 });
 
 calculatorEqualsButton.addEventListener('click', () => {
-    calculatorOperation(currentOperator);
+    shouldCalculatorOperate();
+    repeat = true;
 });
 

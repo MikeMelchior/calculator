@@ -20,7 +20,7 @@ const divide = (x, y) => {
 const operate = (operator, x, y) => {
     switch(operator) {
         case '+':
-            operationString = `${x} + ${y} =`
+            operationString = `${x} + ${y} =`;
             return add(x, y);
             break;
         case '-':
@@ -51,10 +51,15 @@ const calculatorEqualsButton = document.querySelector('.equals');
 const calculatorClearButton = document.querySelector('.clear-button');
 
 let operationString = ''
-let capturedNum = null;
-let currentNum = null;
+// let capturedNum = null;
+// let currentNum = null;
+// let lastNum = null;
+let x = null;
+let y = null;
+let answer = null;
 let currentOperator = null;
 let answered = false;
+
 
 
 
@@ -68,26 +73,6 @@ const clearCalculator = () => {
     capturedNumberDisplay.textContent = ''
 }
 
-const updateDisplay = (num) => {
-    if (answered == true) {
-        calculatorDisplay.textContent = num;
-        return;
-    }
-    if (calculatorDisplay.textContent == '0') {
-        calculatorDisplay.textContent = '';
-    }
-    calculatorDisplay.textContent += num;
-};
-
-const getCurrentNum = () => {
-    currentNum = parseInt(calculatorDisplay.textContent);
-    return currentNum;
-}
-
-const updateCapturedNumberDisplay = () => {
-    capturedNumberDisplay.textContent = capturedNum; 
-}
-
 const checkDecimal = () => {
     if (calculatorDisplay.textContent.split('').includes('.')) {
         console.log('includes decimal');
@@ -96,32 +81,49 @@ const checkDecimal = () => {
     updateDisplay('.');
 }
 
+
+const setCurrentNum = () => {
+    currentNum = parseInt(calculatorDisplay.textContent);
+    return currentNum;
+}
+
+
+
+
+const updateDisplay = (num) => {
+    if (calculatorDisplay.textContent == '0') {
+        calculatorDisplay.textContent = '';
+    }
+    calculatorDisplay.textContent += num;
+    
+};
+
+
+
+
+
+
+
+const updateCapturedNumberDisplay = (text) => {
+    capturedNumberDisplay.textContent = text; 
+}
+
+
+
 const checkOperator = (operator) => {
-    if (currentOperator == null) {
-        currentOperator = operator;
-    };
+    currentOperator = operator;
 };
 
 const calculatorOperation = (operator) => {
-    if (currentOperator == null) {
-        return;
-    }
-    if (capturedNum == null) {
-        capturedNum = getCurrentNum();
-        updateCapturedNumberDisplay();
-        calculatorDisplay.textContent = '';
-        return;
-    };
-    answered = true;
-    updateDisplay(operate(operator, capturedNum, getCurrentNum()));
-    capturedNum = getCurrentNum();
-    if (capturedNum == 'NaN') {
-        updateCapturedNumberDisplay();
-    }
-    
+
+
+
+
+
+
 
     
-    // update camtured number //
+    // update captured number //
     
     // show answer
     
@@ -140,6 +142,8 @@ const calculatorOperation = (operator) => {
 
 
 calculatorClearButton.addEventListener('click', clearCalculator);
+calculatorDecimalButton.addEventListener('click', checkDecimal);
+
 
 calculatorNumberButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -147,7 +151,7 @@ calculatorNumberButtons.forEach((button) => {
     });
 });
 
-calculatorDecimalButton.addEventListener('click', checkDecimal);
+
 
 calculatorOperatorButtons.forEach(button => {
     button.addEventListener('click', () => {

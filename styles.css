@@ -38,27 +38,35 @@ body, html {
 
         .calculator-screen {
             height: 20%;
+            min-height: 60px;
             border-radius: 10px;
             margin: 10px;
             background-color: green;
             color: white;
-            display: flex;
             flex-direction: column;
             align-items: flex-end;
             justify-content: center;
         }
 
             .display-text {
-                margin-top: auto;
-                margin-bottom: 2%;
-                margin-right: 3%;
-                padding-bottom: 3%;
-                font-size: 150%;
+                font-size: 200%;
+                width: auto;
+                height: 60%;
+                padding-right: 10px;
             }
 
             .captured-number {
-                margin: 3% 5% auto 0%;
-                padding-top: 4px;
+                width: auto;
+                height: 40%; 
+                padding-right: 25px;
+                padding-top: 3px;
+            }
+
+            .display-text,
+            .captured-number {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
             }
 
         .calculator-buttons {

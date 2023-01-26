@@ -57,17 +57,21 @@ const operate = (operator, x, y) => {
 
 const calculatorNumberButtons = document.querySelectorAll('.number');
 const calculatorDisplay = document.querySelector('.display-text');
-const answerDisplay = document.querySelector('.captured-number');
+const operationDisplayText = document.querySelector('.captured-number');
 const calculatorDecimalButton = document.querySelector('.decimal');
 const calculatorOperatorButtons = document.querySelectorAll('.operator');
 const calculatorEqualsButton = document.querySelector('.equals');
 const calculatorClearButton = document.querySelector('.clear-button');
 const calculatorBackspaceButton = document.querySelector('.backspace');
 const calculatorPlusMinusButton = document.querySelector('.plus-minus');
+const calculatorPercentButton = document.querySelector('.percent');
+
+
 
 
 let operationString = ''
 let x = null;
+let y = null;
 let currentOperator = null;
 let answered = false;
 let beginFlag = true;
@@ -78,10 +82,11 @@ let repeat = false;
 
 const clearCalculator = () => {
     x = null;
+    y = null;
     currentOperator = null;
     answered = false;
     calculatorDisplay.textContent = 0;
-    answerDisplay.textContent = '';
+    operationDisplayText.textContent = '';
     beginFlag = true;
 
 }
@@ -95,7 +100,7 @@ const checkDecimal = () => {
 };
 
 const getDisplayedNumber = () => {
-    return parseInt(calculatorDisplay.textContent);
+    return parseFloat(calculatorDisplay.textContent);
 };
 
 const backspace = () => {
@@ -103,7 +108,33 @@ const backspace = () => {
 };
 
 const makeNegative = () => {
-    calculatorDisplay.textContent = parseInt(getDisplayedNumber()) * -1;
+    calculatorDisplay.textContent = parseFloat(getDisplayedNumber()) * -1;
+};
+
+const makePercentage = () => {
+    calculatorDisplay.textContent = parseFloat(getDisplayedNumber()) / 100;
+}
+
+
+const getX = () => {
+    return x;
+};
+
+const getY = () => {
+    return y;
+};
+
+const getAnswer = () => {
+    return answer;
+};
+
+const declareNewNum = () => {
+    newNum = true;
+};
+
+const setOperator = (operator) => {
+    currentOperator = operator;
+    declareNewNum();
 };
 
 const updateDisplay = (num) => {
@@ -113,6 +144,7 @@ const updateDisplay = (num) => {
         return;
     };
     if (newNum == true) {
+        y = null;
         calculatorDisplay.textContent = '';
         calculatorDisplay.textContent += num;
         newNum = false;
@@ -123,46 +155,55 @@ const updateDisplay = (num) => {
     };  
 };
 
-const getX = () => {
-    return x;
-};
-
-const declareNewNum = () => {
-    newNum = true;
-};
-
-const setOperator = (operator) => {
-    currentOperator = operator;
-};
 
 
-const setNumbers = () => {
-    if (x == null){
-            x = getDisplayedNumber();
-            return;
-        };
 
-    if (answered == true) {
-        x = getDisplayedNumber();
-        answered = false;
-        return;
-    };
-};
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+
+
 
 
 
 
 const shouldCalculatorOperate = () => {
-    if (answered == false && x!=null) {
-        calculatorDisplay.textContent = operate(currentOperator, getX(), getDisplayedNumber());
-        answerDisplay.textContent = operationString;
-        answered = true;
+
+    if (x == null){
+        x = getDisplayedNumber();
+        operationDisplayText.textContent = `${x}`;
+        return;
+    };
+
+    if (y == null) {
+        y = getDisplayedNumber();
+        calculatorDisplay.textContent = operate(currentOperator, x, y);
+        operationDisplayText.textContent = `${x} ${currentOperator} ${y} =`;
+        x = getDisplayedNumber();
     }
-    setNumbers();
+
+    
 }
 
 
+const equalsOperation = () => {
+    if (x == null || currentOperator == null) {
+        return;
+    };
 
+    if (y == null) {
+        y = getDisplayedNumber()
+        calculatorDisplay.textContent = operate(currentOperator, x, y);
+        operationDisplayText.textContent = `${x} ${currentOperator} ${y} =`
+        x = getDisplayedNumber();
+        return;
+    }
+    calculatorDisplay.textContent = operate(currentOperator, x, y);
+    operationDisplayText.textContent = `${x} ${currentOperator} ${y} =`
+    x = getDisplayedNumber();
+}
 
 
 
@@ -172,7 +213,9 @@ const shouldCalculatorOperate = () => {
 calculatorClearButton.addEventListener('click', clearCalculator);
 calculatorDecimalButton.addEventListener('click', checkDecimal);
 calculatorBackspaceButton.addEventListener('click', backspace);
+
 calculatorPlusMinusButton.addEventListener('click', makeNegative);
+calculatorPercentButton.addEventListener('click', makePercentage);
 
 
 
@@ -186,15 +229,32 @@ calculatorNumberButtons.forEach((button) => {
 
 calculatorOperatorButtons.forEach(button => {
     button.addEventListener('click', () => {
-        
-        declareNewNum();
+        setOperator(button.textContent);
         shouldCalculatorOperate();
-        setOperator(button.textContent);        
-    })
+    });
 });
 
 calculatorEqualsButton.addEventListener('click', () => {
-    shouldCalculatorOperate();
-    repeat = true;
+    declareNewNum();
+    equalsOperation();
+    
 });
+
+
+
+
+
+
+
+
+
+// const shouldCalculatorOperate = () => {
+//     if (answered == false && x!=null) {
+//         calculatorDisplay.textContent = operate(currentOperator, getX(), getDisplayedNumber());
+//         operationDisplayText.textContent = operationString;
+//         answered = true;
+//     }
+//     setNumbers();
+// }
+
 

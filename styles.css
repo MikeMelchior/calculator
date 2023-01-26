@@ -18,6 +18,7 @@ body, html {
 
 .middle-section {
     height: 60%;
+    min-height: 550px;
     display: flex;
 }
 
@@ -26,8 +27,8 @@ body, html {
     }
 
     .calculator-shell {
-        width: 18%;
-        min-height: 200px;
+        width: 20%;
+        min-height: fit-content;
         display: flex;
         flex-direction: column;
         border-radius: 25px;
@@ -49,7 +50,7 @@ body, html {
         }
 
             .display-text {
-                font-size: 200%;
+                font-size: 220%;
                 width: auto;
                 height: 60%;
                 padding-right: 10px;
@@ -60,6 +61,7 @@ body, html {
                 height: 40%; 
                 padding-right: 25px;
                 padding-top: 3px;
+                font-size: 130%;
             }
 
             .display-text,
@@ -67,6 +69,7 @@ body, html {
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
+                overflow: hidden;
             }
 
         .calculator-buttons {
@@ -92,6 +95,8 @@ body, html {
                     align-items: center;
                     background-color: rgba(255, 255, 255, 0.2);
                     color: white;
+                    font-size: 150%;
+                    font-weight: 900;
                 }
 
                 .operator,
@@ -105,7 +110,7 @@ body, html {
                 .percent {
                     background-color: gray;
                 }
-                
+
     .right-of-calc {
         flex: auto;
     }

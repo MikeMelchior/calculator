@@ -94,6 +94,18 @@ body, html {
                     color: white;
                 }
 
+                .operator,
+                .equals {
+                    background-color: orange;
+                }
+
+                .backspace,
+                .clear-button,
+                .plus-minus,
+                .percent {
+                    background-color: gray;
+                }
+                
     .right-of-calc {
         flex: auto;
     }

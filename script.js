@@ -20,14 +20,6 @@ const divide = (x, y) => {
     return x / y;
 };
 
-const plusMinus = (x) => {
-    return -x;
-}
-
-const percentage = (x) => {
-    return x / 100;
-}
-
 const operate = (operator, x, y) => {
     switch(operator) {
         case '+':
@@ -46,15 +38,8 @@ const operate = (operator, x, y) => {
             operationString = `${x} / ${y} =`;
             return divide(x, y);
             break;
-        case '+/-':
-            return plusMinus(x);
-            break;
-        case '%':
-            operationString = `0.01 * ${y} =`;
-            return percentage(x);
-            break;
-    }
-}
+    };
+};
 
 
 
@@ -72,27 +57,23 @@ const calculatorPercentButton = document.querySelector('.percent');
 
 
 
-let operationString = ''
+let operationString = '';
 let x = null;
 let y = null;
 let currentOperator = null;
-let answered = false;
 let beginFlag = true;
 let newNum = false;
-let repeat = false;
 
 
 const clearCalculator = () => {
     x = null;
     y = null;
     currentOperator = null;
-    answered = false;
     calculatorDisplay.textContent = 0;
     operationDisplayText.textContent = '';
     operationString = '',
     beginFlag = true;
-
-}
+};
 
 const checkDecimal = () => {
     if (calculatorDisplay.textContent.split('').includes('.')) {
@@ -109,7 +90,6 @@ const getDisplayedNumber = () => {
 const backspace = () => {
     calculatorDisplay.textContent = calculatorDisplay.textContent.slice(0, calculatorDisplay.textContent.length - 1);
     checkDisplay();
-    setX(); 
 };
 
 const makeNegative = () => {
@@ -119,29 +99,28 @@ const makeNegative = () => {
 const makePercentage = () => {
     calculatorDisplay.textContent = parseFloat(getDisplayedNumber()) / 100;
     setX();
-}
+};
 
 const giveErrorMessage = () => {
     clearCalculator();
     calculatorDisplay.textContent = 'You messed up';
-}
+};
+
+const checkForError = () => {
+    if (calculatorDisplay.textContent == 'ERR') {
+        giveErrorMessage()
+    }
+};
 
 const setX = () => {
     x = getDisplayedNumber();
 };
 
 const checkDisplay = () => {
-    if (isNaN(calculatorDisplay.textContent)) {
+    if (calculatorDisplay.textContent == '') {
         calculatorDisplay.textContent = 0;
+        newNum = true;
     }
-}
-
-const getY = () => {
-    return y;
-};
-
-const getAnswer = () => {
-    return answer;
 };
 
 const declareNewNum = () => {
@@ -156,6 +135,7 @@ const setOperator = (operator) => {
 const updateDisplay = (num) => {
     if (beginFlag) {
         beginFlag = false;
+        newNum = false;
         calculatorDisplay.textContent = '' + num;
         return;
     };
@@ -171,22 +151,7 @@ const updateDisplay = (num) => {
     };  
 };
 
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
 const shouldCalculatorOperate = (operator) => {
-
     if (x == null){
         x = getDisplayedNumber();
         operationDisplayText.textContent = `${x} ${operator}`;
@@ -197,23 +162,21 @@ const shouldCalculatorOperate = (operator) => {
         operationDisplayText.textContent = `${x} ${operator}`;
         return;
     } 
-    
-
-
 
     if (y == null) {
         y = getDisplayedNumber();
         calculatorDisplay.textContent = operate(currentOperator, x, y);
         operationDisplayText.textContent = `${x} ${currentOperator} ${y} =`;
         x = getDisplayedNumber();
+        checkForError();
     }
 
     operationDisplayText.textContent = `${x} ${operator}`;
-    
+    checkForError();
 }
 
 
-const equalsOperation = () => {
+const equalsButtonOperation = () => {
     if (x == null || currentOperator == null) {
         return;
     };
@@ -223,16 +186,14 @@ const equalsOperation = () => {
         calculatorDisplay.textContent = operate(currentOperator, x, y);
         operationDisplayText.textContent = `${x} ${currentOperator} ${y} =`
         x = getDisplayedNumber();
-        answered = true;
+        checkForError();
         return;
     }
     calculatorDisplay.textContent = operate(currentOperator, x, y);
     operationDisplayText.textContent = `${x} ${currentOperator} ${y} =`
     x = getDisplayedNumber();
-    answered = true;
 
-
-    // if == err clear()
+    checkForError();
 }
 
 
@@ -247,15 +208,11 @@ calculatorBackspaceButton.addEventListener('click', backspace);
 calculatorPlusMinusButton.addEventListener('click', makeNegative);
 calculatorPercentButton.addEventListener('click', makePercentage);
 
-
-
 calculatorNumberButtons.forEach((button) => {
     button.addEventListener('click', () => {
         updateDisplay(button.textContent);
     });
 });
-
-
 
 calculatorOperatorButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -266,8 +223,77 @@ calculatorOperatorButtons.forEach(button => {
 
 calculatorEqualsButton.addEventListener('click', () => {
     declareNewNum();
-    equalsOperation();
+    equalsButtonOperation();
 });
 
-
+document.addEventListener('keydown', (e) => {
+    // console.log(e.keyCode)
+    switch(e.keyCode) {
+        case 96:
+            updateDisplay(0);
+            break;
+        case 97:
+            updateDisplay(1);
+            break;
+        case 98:
+            updateDisplay(2);
+            break;
+        case 99:
+            updateDisplay(3);
+            break;
+        case 100:
+            updateDisplay(4);
+            break;
+        case 101:
+            updateDisplay(5);
+            break;
+        case 102:
+            updateDisplay(6);
+            break;
+        case 103:
+            updateDisplay(7);
+            break;
+        case 104:
+            updateDisplay(8);
+            break;
+        case 105:
+            updateDisplay(9);
+            break;
+        case 110:
+            checkDecimal();
+            break;
+        case 13:
+            declareNewNum();
+            equalsButtonOperation();
+            break;
+        case 107:
+            shouldCalculatorOperate('+');
+            setOperator('+'); 
+            break;
+        case 109:
+            shouldCalculatorOperate('-');
+            setOperator('-'); 
+            break;
+        case 106:
+            shouldCalculatorOperate('*');
+            setOperator('*'); 
+            break;
+        case 111:
+            shouldCalculatorOperate('/');
+            setOperator('/'); 
+            break;
+        case 8:
+            backspace();
+            break;
+        case 46:
+            clearCalculator();
+            break;
+        case 53:
+            makePercentage();
+            break;
+        case 189:
+            makeNegative();
+            break;
+    };
+});
 

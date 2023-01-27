@@ -173,8 +173,7 @@ const shouldCalculatorOperate = (operator) => {
 
     operationDisplayText.textContent = `${x} ${operator}`;
     checkForError();
-}
-
+};
 
 const equalsButtonOperation = () => {
     if (x == null || currentOperator == null) {
